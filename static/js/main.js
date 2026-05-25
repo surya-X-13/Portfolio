@@ -451,10 +451,12 @@ function initNavbar() {
 function initMobileMenu() {
   const toggle = document.getElementById("menu-toggle");
   const menu   = document.getElementById("mobile-menu");
+  const backdrop = document.getElementById("mobile-menu-backdrop");
   if (!toggle || !menu) return;
   const open  = () => { menu.classList.add("open"); toggle.classList.add("open"); document.body.style.overflow="hidden"; };
   const close = () => { menu.classList.remove("open"); toggle.classList.remove("open"); document.body.style.overflow=""; };
   toggle.addEventListener("click", () => menu.classList.contains("open") ? close() : open());
+  backdrop?.addEventListener("click", close);
   menu.querySelectorAll(".mobile-link").forEach((l) => l.addEventListener("click", close));
 }
 
