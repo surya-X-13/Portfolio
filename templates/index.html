@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suryadip | AI & Full Stack Developer</title>
+    <meta name="description" content="Suryadip Banerjee — AI/ML Engineer, Full Stack Developer, and Competitive Programmer. 1000+ DSA problems solved. Building scalable, intelligent solutions." />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body>
+
+    <!-- ── Scroll Progress Bar ────────────────────────────────── -->
+    <div id="scroll-progress"></div>
+
+    <!-- ── Preloader ──────────────────────────────────────────── -->
+    <div id="preloader">
+        <div class="preloader-logo">S</div>
+        <div class="preloader-bar"></div>
+    </div>
+
+    <!-- ── Particle Canvas ────────────────────────────────────── -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- ── Sparkle Canvas ─────────────────────────────────────── -->
+    <canvas id="sparkle-canvas"></canvas>
+
+    <!-- ── Noise Overlay ──────────────────────────────────────── -->
+    <div class="noise-overlay"></div>
+
+    <!-- ── Cursor ───────────────────────────────────────────── -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursor-follower"></div>
+
+    <!-- ── Background Orbs ──────────────────────────────────── -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- ── Toast Container ────────────────────────────────────── -->
+    <div id="toast-container"></div>
+
+    <!-- ── Project Modal ──────────────────────────────────────── -->
+    <div id="project-modal">
+        <div class="modal-backdrop" id="modal-backdrop"></div>
+        <div class="modal-content" id="modal-content">
+            <button class="modal-close" id="modal-close" aria-label="Close">
+                <i data-lucide="x"></i>
+            </button>
+            <img class="modal-img" id="modal-img" src="" alt="" />
+            <div class="modal-body">
+                <span class="modal-category" id="modal-category"></span>
+                <h3 class="modal-title" id="modal-title"></h3>
+                <p class="modal-desc" id="modal-desc"></p>
+                <div class="modal-tags" id="modal-tags"></div>
+                <div class="modal-actions">
+                    <a href="#" class="btn-primary" id="modal-github" target="_blank" rel="noopener">
+                        <i data-lucide="github" class="icon-sm"></i> View on GitHub
+                    </a>
+                    <button class="btn-ghost" id="modal-close-btn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Navigation ───────────────────────────────────────── -->
+    <nav id="navbar">
+        <div class="nav-inner" id="nav-inner">
+            <a href="#home" class="nav-logo">
+                <div class="logo-icon"><span>S</span></div>
+                <span class="logo-text">SURYADIP<span class="accent">.DEV</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="#home"            class="nav-link" data-section="home">Home</a>
+                <a href="#about"           class="nav-link" data-section="about">About</a>
+                <a href="#coding-profiles" class="nav-link" data-section="coding-profiles">Coding</a>
+                <a href="#projects"        class="nav-link" data-section="projects">Work</a>
+                <a href="#experience"      class="nav-link" data-section="experience">Expertise</a>
+                <a href="#contact"         class="nav-link" data-section="contact">Contact</a>
+                <a href="#" class="btn-primary" id="download-cv-btn">Download CV</a>
+            </div>
+
+            <button id="menu-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ── Mobile Menu ──────────────────────────────────────── -->
+    <div id="mobile-menu">
+        <a href="#home"            class="mobile-link">Home</a>
+        <a href="#about"           class="mobile-link">About</a>
+        <a href="#coding-profiles" class="mobile-link">Coding</a>
+        <a href="#projects"        class="mobile-link">Work</a>
+        <a href="#experience"      class="mobile-link">Expertise</a>
+        <a href="#contact"         class="mobile-link">Contact</a>
+    </div>
+
+    <!-- ── Hero ─────────────────────────────────────────────── -->
+    <section id="home" class="hero spotlight-section">
+        <!-- Floating background icons -->
+        <div class="hero-float-icons" id="hero-float-icons"></div>
+
+        <div class="container hero-grid">
+            <div class="hero-content scroll-reveal">
+                <div class="status-badge">
+                    <span class="pulse-dot"></span>
+                    Competitive Programmer &amp; Full Stack Dev
+                </div>
+                <h1 class="hero-title">
+                    I <span class="gradient-text" id="typing-target">Solve Problems.</span><span class="typing-cursor"></span>
+                </h1>
+                <p class="hero-sub">
+                    Passionate about AI/ML, Data Structures, and building scalable full-stack applications with robust SQL foundations.
+                </p>
+                <div class="hero-cta">
+                    <a href="#coding-profiles" class="btn-primary magnetic-btn">Coding Profiles <i data-lucide="code" class="icon-sm"></i></a>
+                    <a href="#projects"        class="btn-ghost magnetic-btn">Explore Work <i data-lucide="terminal" class="icon-sm"></i></a>
+                </div>
+            </div>
+
+            <div class="hero-card scroll-reveal" style="--delay:200ms">
+                <div class="card-chrome" id="tilt-card">
+                    <div class="chrome-bar">
+                        <div class="chrome-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <span class="chrome-label">fresher_stats.py</span>
+                    </div>
+                    <div class="code-body">
+                        <pre class="code-block"><span class="kw">class</span> <span class="cl">Engineer</span>:
+    name      <span class="op">=</span> <span class="st">'Suryadip Banerjee'</span>
+    skills    <span class="op">=</span> [<span class="st">'AI'</span>, <span class="st">'FullStack'</span>, <span class="st">'SQL'</span>]
+    dsa_level <span class="op">=</span> <span class="am">'Knight'</span>
+    databases <span class="op">=</span> [<span class="st">'PostgreSQL'</span>, <span class="st">'MongoDB'</span>]
+    platforms <span class="op">=</span> {
+        <span class="st">'LeetCode'</span>  : <span class="st">'1000+ Solved'</span>,
+        <span class="st">'Codeforces'</span>: <span class="st">'Pupil'</span>
+    }
+
+<span class="cm">➜ skills --list</span>
+  ● Python / ML       ● C++ / Java / DSA
+  ● SQL / Databases   ● React / Node.js</pre>
+                        <span class="blink-cursor">█</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-wheel"></div>
+        </div>
+    </section>
+
+    <!-- ── Stats ─────────────────────────────────────────────── -->
+    <section class="stats-band">
+        <div class="container stats-grid">
+            <div class="stat scroll-reveal">
+                <span class="stat-num" style="--c:#818cf8" data-count="1000" data-suffix="+">0</span>
+                <span class="stat-label">DSA Problems</span>
+            </div>
+            <div class="stat scroll-reveal" style="--delay:100ms">
+                <span class="stat-num" style="--c:#c084fc" data-count="15" data-suffix="+">0</span>
+                <span class="stat-label">AI/ML Models</span>
+            </div>
+            <div class="stat scroll-reveal" style="--delay:200ms">
+                <span class="stat-num" style="--c:#f472b6" data-count="20" data-suffix="+">0</span>
+                <span class="stat-label">Git Repos</span>
+            </div>
+            <div class="stat scroll-reveal" style="--delay:300ms">
+                <span class="stat-num" style="--c:#818cf8" data-count="9" data-suffix="+">0</span>
+                <span class="stat-label">CGPA</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Wave Divider ───────────────────────────────────────── -->
+    <div class="wave-divider">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.012)"/>
+        </svg>
+    </div>
+
+    <!-- ── Marquee Tech Ticker ────────────────────────────────── -->
+    <section class="marquee-section">
+        <div class="marquee-track" id="marquee-track"></div>
+    </section>
+
+    <!-- ── About Me ─────────────────────────────────────────── -->
+    <section id="about" class="section spotlight-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <p class="section-eyebrow">Who Am I</p>
+                <h2 class="section-title split-reveal">About <span class="accent">Me</span></h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-photo-wrap scroll-reveal">
+                    <div class="about-photo-ring"></div>
+                    <div class="about-photo-glow"></div>
+                    <img src="{{ url_for('static', path='IMG20260430122003.jpg') }}" alt="Suryadip Banerjee" class="about-photo" />
+                </div>
+                <div class="about-content scroll-reveal" style="--delay:150ms">
+                    <p>
+                        Hi, I'm <strong>Suryadip Banerjee</strong> — a passionate engineer who thrives at the intersection of
+                        <strong>Artificial Intelligence</strong>, <strong>Full Stack Development</strong>, and <strong>Competitive Programming</strong>.
+                    </p>
+                    <p>
+                        I've solved <strong>1000+ DSA problems</strong> across LeetCode and Codeforces, built ML models that power real-world predictions,
+                        and shipped full-stack apps from idea to deployment. I believe clean code and clever algorithms can solve anything.
+                    </p>
+                    <div class="quick-facts">
+                        <div class="fact-card">
+                            <div class="fact-label">Favorite Language</div>
+                            <div class="fact-value">Python 🐍</div>
+                        </div>
+                        <div class="fact-card">
+                            <div class="fact-label">DSA Weapon</div>
+                            <div class="fact-value">C++ ⚡</div>
+                        </div>
+                        <div class="fact-card">
+                            <div class="fact-label">Current Focus</div>
+                            <div class="fact-value">AI/ML Research</div>
+                        </div>
+                        <div class="fact-card">
+                            <div class="fact-label">Coffee / Day</div>
+                            <div class="fact-value">∞ cups ☕</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Wave Divider ───────────────────────────────────────── -->
+    <div class="wave-divider flip">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+            <path d="M0,20 C480,60 960,0 1440,20 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.012)"/>
+        </svg>
+    </div>
+
+    <!-- ── Coding Profiles ───────────────────────────────────── -->
+    <section id="coding-profiles" class="section section-alt spotlight-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <p class="section-eyebrow">Competitive Programming</p>
+                <h2 class="section-title split-reveal">Coding <span class="accent">Profiles</span></h2>
+                <p class="section-sub">Ranked among the top on global platforms. Continuous learner and problem solver at heart.</p>
+            </div>
+
+            <div class="profiles-grid">
+                <!-- LeetCode -->
+                <div class="profile-card scroll-reveal lc-card">
+                    <div class="profile-head">
+                        <div class="platform-icon lc-icon"><i data-lucide="code-2"></i></div>
+                        <a href="https://leetcode.com/mFkJ8YfOWi" target="_blank" rel="noopener" class="ext-link"><i data-lucide="external-link"></i></a>
+                    </div>
+                    <h3 class="platform-name">LeetCode</h3>
+                    <div class="stats-row">
+                        <div class="mini-stat"><span class="ms-num">1000+</span><span class="ms-lbl">Problems</span></div>
+                        <div class="mini-stat"><span class="ms-num">Knight</span><span class="ms-lbl">Badge</span></div>
+                        <div class="mini-stat"><span class="ms-num">Top 5%</span><span class="ms-lbl">Global</span></div>
+                    </div>
+                    <div class="diff-bars">
+                        <div class="diff-row"><span>Easy</span><div class="bar"><div class="fill easy" style="--w:85%"></div></div><span>340</span></div>
+                        <div class="diff-row"><span>Med</span><div class="bar"><div class="fill med" style="--w:60%"></div></div><span>520</span></div>
+                        <div class="diff-row"><span>Hard</span><div class="bar"><div class="fill hard" style="--w:30%"></div></div><span>140</span></div>
+                    </div>
+                </div>
+
+                <!-- Codeforces -->
+                <div class="profile-card scroll-reveal cf-card" style="--delay:150ms">
+                    <div class="profile-head">
+                        <div class="platform-icon cf-icon"><i data-lucide="zap"></i></div>
+                        <a href="https://codeforces.com/profile/suryadip" target="_blank" rel="noopener" class="ext-link"><i data-lucide="external-link"></i></a>
+                    </div>
+                    <h3 class="platform-name">Codeforces</h3>
+                    <div class="stats-row">
+                        <div class="mini-stat"><span class="ms-num">Pupil</span><span class="ms-lbl">Rank</span></div>
+                        <div class="mini-stat"><span class="ms-num">1200+</span><span class="ms-lbl">Rating</span></div>
+                        <div class="mini-stat"><span class="ms-num">300+</span><span class="ms-lbl">Solved</span></div>
+                    </div>
+                    <div class="rating-display">
+                        <div class="rating-arc">
+                            <svg viewBox="0 0 120 80" fill="none">
+                                <path d="M10 70 A55 55 0 0 1 110 70" stroke="#1e293b" stroke-width="8" fill="none" stroke-linecap="round"/>
+                                <path d="M10 70 A55 55 0 0 1 110 70" stroke="url(#cfGrad)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="173" stroke-dashoffset="86"/>
+                                <defs>
+                                    <linearGradient id="cfGrad" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#818cf8"/>
+                                        <stop offset="100%" stop-color="#c084fc"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="arc-label">1200</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Projects ─────────────────────────────────────────── -->
+    <section id="projects" class="section spotlight-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <p class="section-eyebrow">Portfolio</p>
+                <h2 class="section-title split-reveal">Selected <span class="accent">Work</span></h2>
+                <p class="section-sub">A curated collection of projects spanning AI, full-stack web development, and competitive programming tools.</p>
+            </div>
+
+            <div class="filter-bar scroll-reveal">
+                <button class="filter-btn active-filter" data-filter="All">All</button>
+                <button class="filter-btn" data-filter="AI">AI / ML</button>
+                <button class="filter-btn" data-filter="Web">Web</button>
+                <button class="filter-btn" data-filter="DSA">DSA</button>
+            </div>
+
+            <div id="projects-grid" class="projects-grid"></div>
+        </div>
+    </section>
+
+    <!-- ── Wave Divider ───────────────────────────────────────── -->
+    <div class="wave-divider">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.012)"/>
+        </svg>
+    </div>
+
+    <!-- ── Skills ───────────────────────────────────────────── -->
+    <section class="section section-alt spotlight-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <p class="section-eyebrow">Tech Stack</p>
+                <h2 class="section-title split-reveal">Skills &amp; <span class="accent">Tools</span></h2>
+            </div>
+            <div id="skill-cloud" class="skill-cloud"></div>
+        </div>
+    </section>
+
+    <!-- ── GitHub Heatmap ─────────────────────────────────────── -->
+    <section class="section spotlight-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <p class="section-eyebrow">Consistency</p>
+                <h2 class="section-title split-reveal">Coding <span class="accent">Activity</span></h2>
+                <p class="section-sub">A snapshot of my daily problem-solving journey across competitive programming platforms.</p>
+            </div>
+            <div class="heatmap-wrap scroll-reveal" style="--delay:100ms">
+                <div class="heatmap-grid" id="heatmap-grid"></div>
+                <div class="heatmap-legend">
+                    <span>Less</span>
+                    <div class="heatmap-legend-cell" style="background:rgba(255,255,255,0.04)"></div>
+                    <div class="heatmap-legend-cell l1" style="background:rgba(129,140,248,0.15)"></div>
+                    <div class="heatmap-legend-cell l2" style="background:rgba(129,140,248,0.3)"></div>
+                    <div class="heatmap-legend-cell l3" style="background:rgba(129,140,248,0.5)"></div>
+                    <div class="heatmap-legend-cell l4" style="background:rgba(129,140,248,0.75)"></div>
+                    <span>More</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Achievements / Testimonials ─────────────────────── -->
+    <section id="achievements" class="section section-alt spotlight-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <p class="section-eyebrow">Recognition</p>
+                <h2 class="section-title split-reveal">Achievements &amp; <span class="accent">Milestones</span></h2>
+                <p class="section-sub">Key milestones from my journey in tech, problem solving, and continuous learning.</p>
+            </div>
+
+            <div class="testimonials-wrapper scroll-reveal">
+                <button class="carousel-nav carousel-prev" id="carousel-prev" aria-label="Previous">
+                    <i data-lucide="chevron-left"></i>
+                </button>
+                <button class="carousel-nav carousel-next" id="carousel-next" aria-label="Next">
+                    <i data-lucide="chevron-right"></i>
+                </button>
+                <div class="testimonials-track" id="testimonials-track"></div>
+                <div class="testimonial-dots" id="testimonial-dots"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Wave Divider ───────────────────────────────────────── -->
+    <div class="wave-divider flip">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+            <path d="M0,20 C480,60 960,0 1440,20 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.012)"/>
+        </svg>
+    </div>
+
+    <!-- ── Education ──────────────────────────────────────── -->
+    <section id="education" class="section spotlight-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <p class="section-eyebrow">Academic</p>
+                <h2 class="section-title split-reveal">Education <span class="accent">Timeline</span></h2>
+            </div>
+            <div id="education-timeline" class="education-timeline"></div>
+        </div>
+    </section>
+
+    <!-- ── Experience ───────────────────────────────────────── -->
+    <section id="experience" class="section section-alt spotlight-section">
+        <div class="container exp-layout">
+            <div class="exp-sidebar scroll-reveal">
+                <p class="section-eyebrow">Journey</p>
+                <h2 class="section-title">Tech <span class="accent">Expertise</span></h2>
+                <p class="section-sub">Focused areas of deep technical practice — from algorithm mastery to production-grade AI pipelines.</p>
+                <div class="sidebar-decoration"></div>
+            </div>
+            <div id="experience-list" class="exp-timeline"></div>
+        </div>
+    </section>
+
+    <!-- ── Contact ──────────────────────────────────────────── -->
+    <section id="contact" class="section contact-section spotlight-section">
+        <div class="container">
+            <div class="contact-card scroll-reveal">
+                <div class="contact-left">
+                    <p class="section-eyebrow">Get In Touch</p>
+                    <h2 class="contact-title">Let's <span class="accent">Solve</span><br>Next.</h2>
+                    <p class="contact-sub">I'm currently looking for fresh graduate opportunities where I can apply my AI and Full Stack skills.</p>
+                    <a href="mailto:suryadipbanerjee@example.com" class="contact-email">
+                        <div class="email-icon"><i data-lucide="mail"></i></div>
+                        <span>suryadip@example.com</span>
+                    </a>
+                    <div class="social-row">
+                        <a href="#" class="social-btn" aria-label="GitHub"><i data-lucide="github"></i></a>
+                        <a href="#" class="social-btn" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+                        <a href="#" class="social-btn" aria-label="LeetCode"><i data-lucide="code-2"></i></a>
+                    </div>
+                </div>
+
+                <div class="contact-right">
+                    <form id="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="f-name">Name</label>
+                                <input id="f-name" name="name" type="text" placeholder="Your Name" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="f-email">Email</label>
+                                <input id="f-email" name="email" type="email" placeholder="email@provider.com" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="f-msg">Message</label>
+                            <textarea id="f-msg" name="message" rows="5" placeholder="Hi Suryadip, let's discuss..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit magnetic-btn">
+                            <span class="btn-text">Send Message</span>
+                            <i data-lucide="send" class="icon-sm"></i>
+                        </button>
+                    </form>
+                    <div id="form-success" class="form-success hidden">
+                        <div class="success-icon"><i data-lucide="check-circle"></i></div>
+                        <h4>Message Sent!</h4>
+                        <p>I'll get back to you within 24 hours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ───────────────────────────────────────────── -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo-icon sm"><span>S</span></div>
+                <span class="logo-text">SURYADIP<span class="accent">.DEV</span></span>
+            </div>
+            <p class="footer-copy">© 2025 Suryadip Banerjee. Designed with passion.</p>
+            <div class="footer-links">
+                <a href="#">GitHub</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">LeetCode</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ── Back to Top ──────────────────────────────────────── -->
+    <button id="back-to-top" aria-label="Back to top">
+        <i data-lucide="arrow-up"></i>
+    </button>
+
+    <!-- ── Theme Accent Picker ────────────────────────────────── -->
+    <div id="theme-picker">
+        <div class="theme-dots" id="theme-dots">
+            <div class="theme-dot active-theme" data-theme="indigo" title="Indigo"></div>
+            <div class="theme-dot" data-theme="emerald" title="Emerald"></div>
+            <div class="theme-dot" data-theme="rose" title="Rose"></div>
+            <div class="theme-dot" data-theme="amber" title="Amber"></div>
+            <div class="theme-dot" data-theme="cyan" title="Cyan"></div>
+        </div>
+        <button id="theme-toggle-btn" aria-label="Change accent color">
+            <i data-lucide="palette"></i>
+        </button>
+    </div>
+
+    <script src="{{ url_for('static', path='js/main.js') }}" defer></script>
+</body>
+</html>

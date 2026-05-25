@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suryadip | AI & Full Stack Developer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg: #030712;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Animated Blobs */
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-10%, -10%) scale(1); }
+            to { transform: translate(20%, 20%) scale(1.2); }
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background: var(--primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .active-filter {
+            background: var(--primary);
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Skill Tag Animation */
+        .skill-tag {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .skill-tag:hover {
+            transform: scale(1.1) translateY(-5px);
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.5);
+        }
+
+        .mobile-menu-overlay {
+            clip-path: circle(0% at 100% 0%);
+            transition: clip-path 0.5s ease-in-out;
+        }
+        .mobile-menu-overlay.active {
+            clip-path: circle(150% at 100% 0%);
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-anim {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="selection:bg-indigo-500/30">
+
+    <!-- Background Decoration -->
+    <div class="blob top-0 left-0"></div>
+    <div class="blob bottom-0 right-0" style="animation-delay: -5s; background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-[100] transition-all duration-500 py-6 px-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4 rounded-2xl transition-all duration-300" id="nav-inner">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center rotate-3 group-hover:rotate-0 transition-all duration-300 shadow-lg shadow-indigo-600/20">
+                    <i data-lucide="binary" class="text-white w-6 h-6"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight">SURYADIP<span class="text-indigo-500">.DEV</span></span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="nav-link text-gray-400 hover:text-white transition-colors font-medium">Home</a>
+                <a href="#coding-profiles" class="nav-link text-gray-400 hover:text-white transition-colors font-medium">Coding</a>
+                <a href="#projects" class="nav-link text-gray-400 hover:text-white transition-colors font-medium">Work</a>
+                <a href="#experience" class="nav-link text-gray-400 hover:text-white transition-colors font-medium">Expertise</a>
+                <a href="#contact" class="nav-link text-gray-400 hover:text-white transition-colors font-medium">Contact</a>
+                <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-600/20">
+                    Download CV
+                </button>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden z-[110] relative p-2 focus:outline-none">
+                <div id="hamburger" class="space-y-1.5">
+                    <span class="block w-6 h-0.5 bg-white transition-all duration-300"></span>
+                    <span class="block w-6 h-0.5 bg-white transition-all duration-300"></span>
+                    <span class="block w-4 h-0.5 bg-white transition-all duration-300"></span>
+                </div>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="mobile-menu-overlay fixed inset-0 bg-[#030712]/95 backdrop-blur-2xl z-[100] flex flex-col items-center justify-center space-y-8 md:hidden">
+            <a href="#home" class="mobile-link text-3xl font-bold hover:text-indigo-500 transition-colors">Home</a>
+            <a href="#coding-profiles" class="mobile-link text-3xl font-bold hover:text-indigo-500 transition-colors">Coding</a>
+            <a href="#projects" class="mobile-link text-3xl font-bold hover:text-indigo-500 transition-colors">Work</a>
+            <a href="#experience" class="mobile-link text-3xl font-bold hover:text-indigo-500 transition-colors">Expertise</a>
+            <a href="#contact" class="mobile-link text-3xl font-bold hover:text-indigo-500 transition-colors">Contact</a>
+            <div class="flex gap-6 pt-8">
+                <i data-lucide="github" class="w-8 h-8 text-gray-400"></i>
+                <i data-lucide="linkedin" class="w-8 h-8 text-gray-400"></i>
+                <i data-lucide="code-2" class="w-8 h-8 text-gray-400"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-40 pb-24 px-6 min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div class="space-y-8 scroll-reveal">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-white/10 text-indigo-400 font-semibold text-xs tracking-widest uppercase">
+                    <span class="w-2 h-2 bg-indigo-500 rounded-full animate-ping"></span>
+                    Competitive Programmer & Full Stack Dev
+                </div>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black leading-tight tracking-tighter">
+                    I Solve <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Problems.</span>
+                </h1>
+                <p class="text-xl text-gray-400 max-w-lg leading-relaxed font-medium">
+                    Passionate about AI/ML, Data Structures, and building scalable full-stack applications with robust SQL foundations.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <a href="#coding-profiles" class="px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-500 transition-all flex items-center justify-center gap-2 shadow-2xl shadow-indigo-600/30 hover:-translate-y-1">
+                        Coding Profiles <i data-lucide="code" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#projects" class="px-8 py-4 glass text-white font-bold rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 hover:-translate-y-1">
+                        Explore Work <i data-lucide="terminal" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative scroll-reveal" style="transition-delay: 200ms;">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl"></div>
+                <div class="relative glass rounded-[2.5rem] p-6 border border-white/10 shadow-2xl overflow-hidden group">
+                    <div class="bg-[#0a0a0c] rounded-[1.5rem] overflow-hidden border border-white/5">
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/5">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-amber-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                            </div>
+                            <span class="text-[10px] text-gray-500 font-mono uppercase tracking-widest">fresher_stats.py</span>
+                        </div>
+                        <div class="p-8 font-mono text-sm sm:text-base leading-relaxed h-[400px] overflow-y-auto custom-scrollbar">
+                            <div class="space-y-1">
+                                <p><span class="text-purple-400">class</span> <span class="text-blue-400">Engineer</span>:</p>
+                                <p class="pl-4"><span class="text-gray-400">name =</span> <span class="text-green-400">'Suryadip'</span></p>
+                                <p class="pl-4"><span class="text-gray-400">skills =</span> [<span class="text-green-400">'AI'</span>, <span class="text-green-400">'FullStack'</span>, <span class="text-green-400">'SQL'</span>]</p>
+                                <p class="pl-4"><span class="text-gray-400">dsa_level =</span> <span class="text-amber-400">'Knight'</span></p>
+                                <p class="pl-4"><span class="text-gray-400">databases =</span> [<span class="text-green-400">'PostgreSQL'</span>, <span class="text-green-400">'MongoDB'</span>]</p>
+                                <p class="pl-4"><span class="text-gray-400">platforms =</span> {</p>
+                                <p class="pl-8"><span class="text-gray-400">'LeetCode':</span> <span class="text-green-400">'1000+ Solved'</span>,</p>
+                                <p class="pl-8"><span class="text-gray-400">'Codeforces':</span> <span class="text-green-400">'Pupil'</span></p>
+                                <p class="pl-4">}</p>
+                                <p class="text-green-400 pt-6">➜ <span class="text-white">skills --list</span></p>
+                                <div class="grid grid-cols-2 gap-x-8 gap-y-2 text-gray-400 mt-2 text-xs">
+                                    <p>● Python / ML</p>
+                                    <p>● C++ / Java / DSA</p>
+                                    <p>● SQL / Databases</p>
+                                    <p>● React / Node.js</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 bg-white/[0.02] border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+            <div class="scroll-reveal">
+                <h3 class="text-4xl md:text-5xl font-black text-indigo-500 mb-2">1000+</h3>
+                <p class="text-gray-500 uppercase text-xs tracking-widest font-bold">DSA Problems</p>
+            </div>
+            <div class="scroll-reveal" style="transition-delay: 100ms;">
+                <h3 class="text-4xl md:text-5xl font-black text-purple-500 mb-2">15+</h3>
+                <p class="text-gray-500 uppercase text-xs tracking-widest font-bold">AI/ML Models</p>
+            </div>
+            <div class="scroll-reveal" style="transition-delay: 200ms;">
+                <h3 class="text-4xl md:text-5xl font-black text-pink-500 mb-2">20+</h3>
+                <p class="text-gray-500 uppercase text-xs tracking-widest font-bold">Git Repos</p>
+            </div>
+            <div class="scroll-reveal" style="transition-delay: 300ms;">
+                <h3 class="text-4xl md:text-5xl font-black text-indigo-400 mb-2">9+</h3>
+                <p class="text-gray-500 uppercase text-xs tracking-widest font-bold">YGPA</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coding Profiles Section -->
+    <section id="coding-profiles" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 scroll-reveal">
+                <h2 class="text-4xl md:text-6xl font-black mb-6">Competitive <span class="text-indigo-500">Coding</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg font-medium">Ranked among the top on global platforms. Continuous learner and problem solver at heart.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- LeetCode Card -->
+                <div class="glass p-8 rounded-[2.5rem] border-white/10 hover:border-orange-500/30 transition-all group scroll-reveal">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-16 h-16 bg-orange-500/20 rounded-2xl flex items-center justify-center">
+                            <i data-lucide="code-2" class="text-orange-500 w-8 h-8"></i>
+                        </div>
+                        <a href="https://leetcode.com/mFkJ8YfOWi" target="_blank" class="p-3 glass rounded-xl hover:bg-orange-500 hover:text-white transition-all">
+                            <i data-lucide="external-link" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                    <h3 class="text-3xl font-black mb-2">LeetCode</h3>
+                    <p class="text-gray-500 mb-6 font-bold uppercase text-xs tracking-widest">mFkJ8YfOWi</p>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-400">Solved</span>
+                            <span class="text-white font-bold">1000+ Problems</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-400">Contest Rating</span>
+                            <span class="text-orange-400 font-bold">1845 (Knight)</span>
+                        </div>
+                        <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-orange-500" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Codeforces Card -->
+                <div class="glass p-8 rounded-[2.5rem] border-white/10 hover:border-blue-500/30 transition-all group scroll-reveal" style="transition-delay: 100ms;">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center">
+                            <i data-lucide="layout" class="text-blue-500 w-8 h-8"></i>
+                        </div>
+                        <a href="https://codeforces.com/profile/suryadipbanerjee6" target="_blank" class="p-3 glass rounded-xl hover:bg-blue-500 hover:text-white transition-all">
+                            <i data-lucide="external-link" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                    <h3 class="text-3xl font-black mb-2">Codeforces</h3>
+                    <p class="text-gray-500 mb-6 font-bold uppercase text-xs tracking-widest">@suryadipbanerjee6</p>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-400">Current Rank</span>
+                            <span class="text-blue-400 font-bold">Pupil</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-400">Max Rating</span>
+                            <span class="text-white font-bold">1315</span>
+                        </div>
+                        <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 scroll-reveal">
+                <div class="space-y-4">
+                    <h2 class="text-4xl md:text-6xl font-black">Featured Projects</h2>
+                    <p class="text-gray-400 max-w-md font-medium">From Python-powered AI models to full-stack web architectures.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 p-1.5 glass rounded-2xl border border-white/10">
+                    <button data-filter="All" class="filter-btn active-filter px-6 py-2.5 rounded-xl text-sm font-bold transition-all">All</button>
+                    <button data-filter="AI" class="filter-btn px-6 py-2.5 rounded-xl text-sm font-bold text-gray-400 hover:text-white transition-all">AI/ML</button>
+                    <button data-filter="Web" class="filter-btn px-6 py-2.5 rounded-xl text-sm font-bold text-gray-400 hover:text-white transition-all">Full Stack</button>
+                </div>
+            </div>
+
+            <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section id="experience" class="py-32 bg-indigo-500/[0.01]">
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-20">
+            <div class="lg:col-span-5 space-y-8 scroll-reveal">
+                <h2 class="text-4xl md:text-6xl font-black leading-tight">Expertise & Stack</h2>
+                <p class="text-gray-400 text-lg leading-relaxed">
+                    A blend of analytical thinking and creative engineering. I specialize in turning complex data into intuitive user experiences.
+                </p>
+                
+                <!-- Animated Skill Icons/Symbols Grid -->
+                <div id="skill-cloud" class="grid grid-cols-3 sm:grid-cols-4 gap-4 mt-8">
+                    <!-- Skill Tags Injected via JS -->
+                </div>
+
+                <div class="grid gap-6 pt-10">
+                    <div class="p-6 glass rounded-[2rem] border-white/10">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-600/20 flex items-center justify-center text-indigo-400">
+                                <i data-lucide="database"></i>
+                            </div>
+                            <h4 class="font-bold text-xl">SQL & Databases</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm font-bold"><span class="text-gray-400">Postgres / MySQL / NoSQL</span><span>88%</span></div>
+                            <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-indigo-500 skill-bar" style="width: 0%" data-level="88"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 space-y-12">
+                <div id="experience-list" class="space-y-8">
+                    <!-- Technical Focus Points Injected via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 px-6">
+        <div class="max-w-5xl mx-auto glass rounded-[3rem] border-white/10 p-8 md:p-20 relative overflow-hidden">
+            <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px]"></div>
+            
+            <div class="grid lg:grid-cols-2 gap-16 relative z-10">
+                <div class="space-y-8 scroll-reveal">
+                    <h2 class="text-4xl md:text-6xl font-black leading-tight">Let's <br><span class="text-indigo-500">Solve</span> Next.</h2>
+                    <p class="text-gray-400 text-lg">I'm currently looking for fresh graduate opportunities where I can apply my AI and Full Stack skills.</p>
+                    
+                    <div class="space-y-6 pt-4">
+                        <div class="flex items-center gap-4 group cursor-pointer">
+                            <div class="w-14 h-14 glass rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                <i data-lucide="mail"></i>
+                            </div>
+                            <p class="text-xl font-bold">suryadipbanerjee599@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-reveal" style="transition-delay: 200ms;">
+                    <form id="contact-form" class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Name</label>
+                                <input type="text" required placeholder="Your Name" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-indigo-500 outline-none transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Email</label>
+                                <input type="email" required placeholder="email@provider.com" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-indigo-500 outline-none transition-all">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Message</label>
+                            <textarea rows="4" required placeholder="Hi Suryadip, let's discuss..." class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-indigo-500 outline-none transition-all resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-5 bg-white text-black font-black rounded-2xl hover:bg-gray-200 transition-all flex items-center justify-center gap-3 active:scale-95 shadow-2xl">
+                            Send Inquiry <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </form>
+                    <div id="form-success" class="hidden text-center p-8 space-y-4">
+                        <div class="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto">
+                            <i data-lucide="check" class="w-10 h-10"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold">Message Sent!</h4>
+                        <p class="text-gray-400">I will get back to you within 24 hours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 border-t border-white/5 bg-[#030712]">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 items-center">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="binary" class="text-white w-4 h-4"></i>
+                    </div>
+                    <span class="text-lg font-bold tracking-tight">SURYADIP<span class="text-indigo-500">.DEV</span></span>
+                </div>
+                <p class="text-gray-500 text-sm max-w-xs">Building intelligent solutions and mastering complex algorithms.</p>
+            </div>
+            
+            <div class="flex justify-center gap-8">
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">LeetCode</a>
+            </div>
+
+            <div class="text-right text-sm text-gray-500">
+                <p>© 2025 Suryadip Banerjee.</p>
+                <p>Designed with Passion.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Data
+        const PROJECTS = [
+            { id: 1, title: "NeuralCore AI", category: "AI", tags: ["Python", "TensorFlow", "Pandas"], img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800", desc: "A custom ML model for predictive analytics with Jupyter-based research." },
+            { id: 2, title: "DataLink SQL Engine", category: "Web", tags: ["PostgreSQL", "Node.js", "SQL"], img: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&q=80&w=800", desc: "A high-performance query optimizer for relational databases." },
+            { id: 3, title: "DevFlow FullStack", category: "Web", tags: ["React", "Node.js", "MongoDB"], img: "https://images.unsplash.com/photo-1551288049-bbbda536ad0a?auto=format&fit=crop&q=80&w=800", desc: "Enterprise project management tool with real-time collaboration features." },
+            { id: 4, title: "Algo-Viz 3D", category: "DSA", tags: ["Three.js", "C++", "WebAssembly"], img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800", desc: "3D visualization of graph algorithms and dynamic programming state transitions." },
+            { id: 5, title: "Sentiment Bot", category: "AI", tags: ["NLTK", "Flask", "Python"], img: "https://images.unsplash.com/photo-1621761191319-c6fb62004040?auto=format&fit=crop&q=80&w=800", desc: "Natural Language Processing tool to analyze customer feedback on scale." },
+            { id: 6, title: "SwiftCommerce", category: "Web", tags: ["Tailwind", "Firebase", "Redux"], img: "https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&q=80&w=800", desc: "Fast-loading e-commerce template optimized for core web vitals." }
+        ];
+
+        const EXPERIENCE = [
+            { role: "DSA Problem Solving", company: "Platform Mastery", period: "Ongoing", desc: "Mastered 500+ problems across LeetCode, Codeforces, and GFG. Strong grip on Dynamic Programming and Graphs." },
+            { role: "SQL & Database Design", company: "Portfolio Tech", period: "2024", desc: "Optimized complex SQL queries and designed normalized schemas for scalable applications." },
+            { role: "AI App Dev", company: "Project Portfolio", period: "2024", desc: "Developed various automation scripts and ML-integrated apps using Python and Jupyter environments." }
+        ];
+
+        const SKILLS = [
+            { name: "Python", icon: "code" },
+            { name: "C++", icon: "cpu" },
+            { name: "SQL", icon: "database" },
+            { name: "React", icon: "layers" },
+            { name: "Node.js", icon: "server" },
+            { name: "Postgres", icon: "table" },
+            { name: "ML", icon: "brain" },
+            { name: "Java", icon: "coffee" }
+        ];
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderProjects('All');
+            renderExperience();
+            renderSkills();
+            initScrollReveal();
+            initNavbar();
+            initMobileMenu();
+            initContactForm();
+        });
+
+        // Components
+        function renderSkills() {
+            const container = document.getElementById('skill-cloud');
+            container.innerHTML = SKILLS.map((s, i) => `
+                <div class="skill-tag float-anim glass p-4 rounded-2xl border-white/5 flex flex-col items-center justify-center gap-2 group cursor-default" style="animation-delay: ${i * 0.5}s">
+                    <i data-lucide="${s.icon}" class="w-6 h-6 text-gray-500 group-hover:text-indigo-400 transition-colors"></i>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white transition-colors">${s.name}</span>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderProjects(filter) {
+            const grid = document.getElementById('projects-grid');
+            const data = filter === 'All' ? PROJECTS : PROJECTS.filter(p => p.category === filter);
+            
+            grid.innerHTML = data.map(p => `
+                <div class="group relative glass rounded-[2.5rem] overflow-hidden border-white/10 hover:border-indigo-500/50 transition-all duration-500 hover:-translate-y-2 flex flex-col scroll-reveal">
+                    <div class="aspect-[4/3] overflow-hidden">
+                        <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-black text-indigo-400 uppercase tracking-widest border border-white/5">${p.category}</span>
+                            <div class="flex gap-2">
+                                <a href="#" class="p-2.5 glass rounded-xl hover:bg-indigo-600 transition-colors">
+                                    <i data-lucide="github" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black mb-3">${p.title}</h3>
+                        <p class="text-gray-400 text-sm mb-6 flex-1 font-medium leading-relaxed">${p.desc}</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${p.tags.map(t => `<span class="text-[10px] font-bold text-gray-500 uppercase">#${t}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        function renderExperience() {
+            const list = document.getElementById('experience-list');
+            list.innerHTML = EXPERIENCE.map((e, idx) => `
+                <div class="group flex gap-8 scroll-reveal" style="transition-delay: ${idx * 100}ms">
+                    <div class="hidden sm:flex flex-col items-center">
+                        <div class="w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-indigo-500/20"></div>
+                        <div class="w-px h-full bg-white/10 my-2"></div>
+                    </div>
+                    <div class="flex-1 pb-12">
+                        <div class="p-8 glass rounded-[2.5rem] border-white/10 group-hover:border-indigo-500/30 transition-all">
+                            <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-2">
+                                <h4 class="text-2xl font-black">${e.role}</h4>
+                                <span class="px-4 py-1.5 glass rounded-full text-xs font-bold text-gray-400 border border-white/5">${e.period}</span>
+                            </div>
+                            <p class="text-indigo-400 font-bold mb-4">${e.company}</p>
+                            <p class="text-gray-400 leading-relaxed font-medium">${e.desc}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Logic
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-visible');
+                        const bars = entry.target.querySelectorAll('.skill-bar');
+                        bars.forEach(bar => {
+                            bar.style.width = bar.dataset.level + '%';
+                        });
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        }
+
+        function initNavbar() {
+            const nav = document.getElementById('navbar');
+            const navInner = document.getElementById('nav-inner');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    navInner.classList.add('glass', 'shadow-2xl');
+                    navInner.classList.remove('px-6');
+                    nav.classList.add('py-4');
+                } else {
+                    navInner.classList.remove('glass', 'shadow-2xl');
+                    navInner.classList.add('px-6');
+                    nav.classList.remove('py-4');
+                }
+            });
+        }
+
+        function initMobileMenu() {
+            const toggle = document.getElementById('menu-toggle');
+            const menu = document.getElementById('mobile-menu');
+            const hamburger = document.getElementById('hamburger');
+            const links = document.querySelectorAll('.mobile-link');
+
+            const toggleMenu = () => {
+                menu.classList.toggle('active');
+                const bars = hamburger.children;
+                if(menu.classList.contains('active')) {
+                    bars[0].style.transform = "rotate(45deg) translate(5px, 5px)";
+                    bars[1].style.opacity = "0";
+                    bars[2].style.transform = "rotate(-45deg) translate(5px, -5px)";
+                    bars[2].style.width = "24px";
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    bars[0].style.transform = "none";
+                    bars[1].style.opacity = "1";
+                    bars[2].style.transform = "none";
+                    bars[2].style.width = "16px";
+                    document.body.style.overflow = 'auto';
+                }
+            };
+
+            toggle.addEventListener('click', toggleMenu);
+            links.forEach(l => l.addEventListener('click', toggleMenu));
+        }
+
+        function initContactForm() {
+            const form = document.getElementById('contact-form');
+            const success = document.getElementById('form-success');
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = form.querySelector('button');
+                btn.disabled = true;
+                btn.innerHTML = 'Sending...';
+                
+                setTimeout(() => {
+                    form.classList.add('hidden');
+                    success.classList.remove('hidden');
+                }, 1500);
+            });
+        }
+
+        // Filtering Logic
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter', 'text-white'));
+                btn.classList.add('active-filter');
+                renderProjects(btn.dataset.filter);
+            });
+        });
+    </script>
+</body>
+</html>  
