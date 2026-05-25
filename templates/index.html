@@ -147,14 +147,22 @@
             <div class="hero-card scroll-reveal" style="--delay:200ms">
                 <div class="card-chrome" id="tilt-card">
                     <div class="chrome-bar">
+                        <div class="chrome-tabs">
+                            <button class="chrome-tab active" data-tab="editor">
+                                <i data-lucide="file-code" class="icon-xs"></i> fresher_stats.py
+                            </button>
+                            <button class="chrome-tab" data-tab="terminal">
+                                <i data-lucide="terminal" class="icon-xs"></i> bash_terminal
+                            </button>
+                        </div>
                         <div class="chrome-dots">
                             <span class="dot red"></span>
                             <span class="dot yellow"></span>
                             <span class="dot green"></span>
                         </div>
-                        <span class="chrome-label">fresher_stats.py</span>
                     </div>
-                    <div class="code-body">
+                    
+                    <div class="code-body active-body" id="tab-editor">
                         <pre class="code-block"><span class="kw">class</span> <span class="cl">Engineer</span>:
     name      <span class="op">=</span> <span class="st">'Suryadip Banerjee'</span>
     skills    <span class="op">=</span> [<span class="st">'AI'</span>, <span class="st">'FullStack'</span>, <span class="st">'SQL'</span>]
@@ -169,6 +177,17 @@
   ● Python / ML       ● C++ / Java / DSA
   ● SQL / Databases   ● React / Node.js</pre>
                         <span class="blink-cursor">█</span>
+                    </div>
+
+                    <div class="code-body" id="tab-terminal" style="display: none;">
+                        <div class="terminal-history" id="terminal-history">
+                            <div class="terminal-line"><span class="terminal-prompt">guest@suryadip.dev:~$</span> welcome</div>
+                            <div class="terminal-output">Welcome to Suryadip's Interactive Terminal v1.0! Type 'help' to see available commands.</div>
+                        </div>
+                        <div class="terminal-input-row">
+                            <span class="terminal-prompt">guest@suryadip.dev:~$</span>
+                            <input type="text" id="terminal-input" placeholder="Type a command (try 'help')..." autocomplete="off" />
+                        </div>
                     </div>
                 </div>
             </div>

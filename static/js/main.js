@@ -164,6 +164,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   initMagneticButtons();
   initProjectModal();
   initThemePicker();
+  initTerminalTabs();
+  initTerminalInput();
   await loadProjects();
   animateDiffBars();
 });
@@ -977,5 +979,105 @@ function initContactForm() {
       lucide.createIcons();
       showToast("Message Sent! 🎉", "I'll get back to you soon.", "success");
     }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INTERACTIVE DEVELOPER TERMINAL SANDBOX
+═══════════════════════════════════════════════════════════════ */
+function initTerminalTabs() {
+  const tabs = document.querySelectorAll(".chrome-tab");
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      
+      const target = tab.dataset.tab;
+      document.querySelectorAll(".code-body").forEach(body => {
+        body.style.display = "none";
+        body.classList.remove("active-body");
+      });
+      
+      const activeBody = document.getElementById(`tab-${target}`);
+      if (activeBody) {
+        activeBody.style.display = "block";
+        activeBody.classList.add("active-body");
+        if (target === "terminal") {
+          document.getElementById("terminal-input")?.focus();
+        }
+      }
+    });
+  });
+}
+
+function initTerminalInput() {
+  const input = document.getElementById("terminal-input");
+  const history = document.getElementById("terminal-history");
+  if (!input || !history) return;
+  
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const rawCmd = input.value;
+      const cmd = rawCmd.trim().toLowerCase();
+      if (!cmd) return;
+      
+      // 1. Add user's command to history
+      const userLine = document.createElement("div");
+      userLine.className = "terminal-line";
+      userLine.innerHTML = `<span class="terminal-prompt">guest@suryadip.dev:~$</span> ${rawCmd}`;
+      history.appendChild(userLine);
+      
+      // 2. Process command output
+      let output = "";
+      if (cmd === "help") {
+        output = "Available commands:<br>" + 
+                 " - <b>about</b>    : Brief bio of Suryadip.<br>" +
+                 " - <b>skills</b>   : View core technical stack.<br>" +
+                 " - <b>dsa</b>      : Check competitive programming stats.<br>" +
+                 " - <b>projects</b> : Lists featured portfolio projects.<br>" +
+                 " - <b>contact</b>  : Find my email and social links.<br>" +
+                 " - <b>clear</b>    : Clear prompt history.";
+      } else if (cmd === "about") {
+        output = "I am Suryadip Banerjee — an AI & Full Stack Developer who enjoys solving complex algorithmic puzzles and building secure, data-driven applications.";
+      } else if (cmd === "skills") {
+        output = "LANGUAGES  : C++, Python, JavaScript, Java, SQL<br>" + 
+                 "DATABASES  : PostgreSQL, MongoDB<br>" +
+                 "FRAMEWORKS : React, Node.js, FastAPI, Flask, TensorFlow";
+      } else if (cmd === "dsa") {
+        output = "COMPETITIVE PROGRAMMING STATISTICS:<br>" +
+                 " - <b>LeetCode</b>  : Knight Badge (Top 5% Global, 1000+ solved)<br>" +
+                 " - <b>Codeforces</b>: Pupil (1200+ peak rating)";
+      } else if (cmd === "projects") {
+        output = "FEATURED PORTFOLIO PROJECTS:<br>" +
+                 " - <b>NeuralCore AI</b>: Custom ML model for predictive analytics.<br>" +
+                 " - <b>DataLink SQL Engine</b>: High-performance query optimizer.<br>" +
+                 " - <b>Algo-Viz 3D</b>: 3D graph algorithm visualizer.";
+      } else if (cmd === "contact") {
+        output = "EMAIL   : suryadipbanerjee@example.com<br>" +
+                 "GITHUB  : github.com/surya-X-13<br>" +
+                 "LINKEDIN: linkedin.com/in/suryadip-banerjee";
+      } else if (cmd === "clear") {
+        history.innerHTML = "";
+      } else {
+        output = `bash: command not found: ${cmd}. Type 'help' for options.`;
+      }
+      
+      // Append output if present
+      if (output) {
+        const outDiv = document.createElement("div");
+        outDiv.className = "terminal-output";
+        outDiv.innerHTML = output;
+        history.appendChild(outDiv);
+      }
+      
+      // 3. Reset and scroll to bottom
+      input.value = "";
+      history.scrollTop = history.scrollHeight;
+    }
+  });
+  
+  // Clicking anywhere on the terminal targets focus
+  document.getElementById("tab-terminal")?.addEventListener("click", () => {
+    input.focus();
   });
 }
