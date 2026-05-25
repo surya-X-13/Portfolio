@@ -8,22 +8,22 @@
 
 /* ── Data ──────────────────────────────────────────────────────── */
 const SKILLS = [
-  { name: "Python",    icon: "code" },
-  { name: "C++",       icon: "cpu" },
-  { name: "SQL",       icon: "database" },
-  { name: "React",     icon: "layers" },
-  { name: "Node.js",   icon: "server" },
-  { name: "Postgres",  icon: "table" },
-  { name: "ML",        icon: "brain" },
-  { name: "Java",      icon: "coffee" },
-  { name: "TensorFlow",icon: "activity" },
-  { name: "Flask",     icon: "flask-conical" },
-  { name: "MongoDB",   icon: "disc" },
-  { name: "Git",       icon: "git-branch" },
-  { name: "Linux",     icon: "terminal" },
-  { name: "Docker",    icon: "box" },
-  { name: "REST API",  icon: "plug" },
-  { name: "JS",        icon: "file-code" },
+  { name: "Python",    icon: "code",         color: "#306998" },
+  { name: "C++",       icon: "cpu",          color: "#00599c" },
+  { name: "SQL",       icon: "database",     color: "#336791" },
+  { name: "React",     icon: "layers",       color: "#61dafb" },
+  { name: "Node.js",   icon: "server",       color: "#68a063" },
+  { name: "Postgres",  icon: "table",        color: "#336791" },
+  { name: "ML",        icon: "brain",        color: "#ff6f00" },
+  { name: "Java",      icon: "coffee",       color: "#f89820" },
+  { name: "TensorFlow",icon: "activity",     color: "#ff6f00" },
+  { name: "Flask",     icon: "flask-conical",color: "#64748b" },
+  { name: "MongoDB",   icon: "disc",         color: "#4db33d" },
+  { name: "Git",       icon: "git-branch",   color: "#f05032" },
+  { name: "Linux",     icon: "terminal",     color: "#fcc624" },
+  { name: "Docker",    icon: "box",          color: "#2496ed" },
+  { name: "REST API",  icon: "plug",         color: "#009688" },
+  { name: "JS",        icon: "file-code",    color: "#f7df1e" },
 ];
 
 const EXPERIENCE = [
@@ -134,8 +134,69 @@ const HERO_ICONS = ["⚡", "🧠", "💻", "🔥", "🚀", "⭐", "🎯", "📊"
 // Store project data globally for modal
 let PROJECT_DATA = [];
 
+// Global theme accent color cache for high-performance canvas loops
+let ACTIVE_THEME_RGB = { r: 129, g: 140, b: 248 }; // Indigo default
+let ACTIVE_SECONDARY_RGB = { r: 192, g: 132, b: 252 };
+
+function updateThemeCacheColors() {
+  setTimeout(() => {
+    const rootStyle = getComputedStyle(document.documentElement);
+    const primaryHex = rootStyle.getPropertyValue('--primary').trim() || '#818cf8';
+    const secondaryHex = rootStyle.getPropertyValue('--secondary').trim() || '#c084fc';
+    
+    const pRgb = hexToRgb(primaryHex);
+    const sRgb = hexToRgb(secondaryHex);
+    
+    if (pRgb) ACTIVE_THEME_RGB = pRgb;
+    if (sRgb) ACTIVE_SECONDARY_RGB = sRgb;
+  }, 50);
+}
+
+function hexToRgb(hex) {
+  const cleanHex = hex.replace('#', '').trim();
+  if (cleanHex.length === 3) {
+    const r = parseInt(cleanHex.substring(0, 1) + cleanHex.substring(0, 1), 16);
+    const g = parseInt(cleanHex.substring(1, 2) + cleanHex.substring(1, 2), 16);
+    const b = parseInt(cleanHex.substring(2, 3) + cleanHex.substring(2, 3), 16);
+    return { r, g, b };
+  } else if (cleanHex.length === 6) {
+    const r = parseInt(cleanHex.substring(0, 2), 16);
+    const g = parseInt(cleanHex.substring(2, 4), 16);
+    const b = parseInt(cleanHex.substring(4, 6), 16);
+    return { r, g, b };
+  }
+  return null;
+}
+
+function setTheme(theme) {
+  const validThemes = ["indigo", "emerald", "rose", "amber", "cyan"];
+  if (!validThemes.includes(theme)) return false;
+  
+  if (theme === "indigo") {
+    document.documentElement.removeAttribute("data-accent");
+  } else {
+    document.documentElement.setAttribute("data-accent", theme);
+  }
+  
+  // Sync the theme dots UI
+  const dots = document.getElementById("theme-dots");
+  if (dots) {
+    dots.querySelectorAll(".theme-dot").forEach((dot) => {
+      if (dot.dataset.theme === theme) {
+        dot.classList.add("active-theme");
+      } else {
+        dot.classList.remove("active-theme");
+      }
+    });
+  }
+  
+  updateThemeCacheColors();
+  return true;
+}
+
 /* ── Init ──────────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", async () => {
+  updateThemeCacheColors();
   lucide.createIcons();
   initPreloader();
   initParticles();
@@ -221,6 +282,10 @@ function initParticles() {
   }
   function draw() {
     ctx.clearRect(0, 0, w, h);
+    const r = ACTIVE_THEME_RGB.r;
+    const g = ACTIVE_THEME_RGB.g;
+    const b = ACTIVE_THEME_RGB.b;
+    
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
@@ -228,7 +293,7 @@ function initParticles() {
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < CONN) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(129,140,248,${(1 - dist / CONN) * 0.15})`;
+          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - dist / CONN) * 0.15})`;
           ctx.lineWidth = 0.5;
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
@@ -245,7 +310,7 @@ function initParticles() {
       if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(129,140,248,${p.alpha})`;
+      ctx.fillStyle = `rgba(${r},${g},${b},${p.alpha})`;
       ctx.fill();
     });
     requestAnimationFrame(draw);
@@ -277,6 +342,12 @@ function initSparkles() {
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     if (Math.abs(dx) + Math.abs(dy) > 5) {
       for (let i = 0; i < 2; i++) {
+        const pRgb = ACTIVE_THEME_RGB;
+        const sRgb = ACTIVE_SECONDARY_RGB;
+        const selectedColor = Math.random() > 0.5 
+          ? `${pRgb.r},${pRgb.g},${pRgb.b}` 
+          : `${sRgb.r},${sRgb.g},${sRgb.b}`;
+        
         sparkles.push({
           x: e.clientX + (Math.random() - 0.5) * 10,
           y: e.clientY + (Math.random() - 0.5) * 10,
@@ -284,7 +355,7 @@ function initSparkles() {
           vy: (Math.random() - 0.5) * 2 - 1,
           life: 1,
           size: Math.random() * 3 + 1,
-          color: Math.random() > 0.5 ? "129,140,248" : "192,132,252",
+          color: selectedColor,
         });
       }
     }
@@ -477,6 +548,14 @@ function initScrollReveal() {
 
 function animateDiffBars(root = document) {
   root.querySelectorAll(".fill").forEach((bar) => bar.classList.add("active"));
+  
+  // Animate Codeforces semi-circular rating gauge path
+  const arcPath = root.querySelector(".rating-arc path[stroke-dasharray]");
+  if (arcPath) {
+    setTimeout(() => {
+      arcPath.style.strokeDashoffset = "86";
+    }, 150);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -688,13 +767,7 @@ function initThemePicker() {
   dots.querySelectorAll(".theme-dot").forEach((dot) => {
     dot.addEventListener("click", () => {
       const theme = dot.dataset.theme;
-      if (theme === "indigo") {
-        document.documentElement.removeAttribute("data-accent");
-      } else {
-        document.documentElement.setAttribute("data-accent", theme);
-      }
-      dots.querySelectorAll(".theme-dot").forEach((d) => d.classList.remove("active-theme"));
-      dot.classList.add("active-theme");
+      setTheme(theme);
       dots.classList.remove("open");
       showToast("Theme Changed", `Accent color set to ${theme}`, "success");
     });
@@ -748,7 +821,7 @@ function renderSkills() {
   const container = document.getElementById("skill-cloud");
   if (!container) return;
   container.innerHTML = SKILLS.map(
-    (s,i) => `<div class="skill-tag scroll-reveal" style="--delay:${i*40}ms"><i data-lucide="${s.icon}"></i><span>${s.name}</span></div>`
+    (s,i) => `<div class="skill-tag scroll-reveal" style="--delay:${i*40}ms; --skill-color:${s.color}; --skill-color-glow:${s.color}1c;"><i data-lucide="${s.icon}"></i><span>${s.name}</span></div>`
   ).join("");
   lucide.createIcons();
   document.querySelectorAll(".skill-tag").forEach((el) => {
@@ -1010,24 +1083,166 @@ function initTerminalTabs() {
   });
 }
 
+let activeGame = null;
+let matrixInterval = null;
+
+const TRIVIA_QUESTIONS = [
+  {
+    q: "Question 1: Which data structure uses LIFO (Last-In-First-Out) order?<br>  <b>(A)</b> Queue<br>  <b>(B)</b> Stack<br>  <b>(C)</b> Heap",
+    a: "b",
+    successMsg: "Correct! Stacks use LIFO (push/pop). Let's go to the next one!",
+    failMsg: "Oops! Incorrect. Stacks use LIFO, while queues use FIFO (First-In-First-Out)."
+  },
+  {
+    q: "Question 2: What is the average time complexity of Quick Sort?<br>  <b>(A)</b> O(N log N)<br>  <b>(B)</b> O(N^2)<br>  <b>(C)</b> O(N)",
+    a: "a",
+    successMsg: "Spot on! Quick Sort averages O(N log N). Final question time!",
+    failMsg: "Not quite. Quick Sort averages O(N log N), though its worst-case is O(N^2)."
+  },
+  {
+    q: "Question 3: In PostgreSQL, which join returns all rows when there is a match in either left or right table?<br>  <b>(A)</b> LEFT JOIN<br>  <b>(B)</b> FULL OUTER JOIN<br>  <b>(C)</b> INNER JOIN",
+    a: "b",
+    successMsg: "Brilliant! FULL OUTER JOIN merges matches and non-matches from both sides.",
+    failMsg: "Incorrect. FULL OUTER JOIN returns all rows from both tables when there's a match."
+  }
+];
+
+function startMatrixRain() {
+  const canvas = document.getElementById("terminal-matrix-canvas");
+  if (!canvas) return;
+  canvas.style.display = "block";
+  
+  const ctx = canvas.getContext("2d");
+  const parent = canvas.parentElement;
+  let w = canvas.width = parent.clientWidth;
+  let h = canvas.height = parent.clientHeight;
+  
+  const cols = Math.floor(w / 12) + 1;
+  const ypos = Array(cols).fill(0);
+  
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, w, h);
+  
+  function step() {
+    ctx.fillStyle = "rgba(5, 5, 8, 0.05)";
+    ctx.fillRect(0, 0, w, h);
+    
+    ctx.fillStyle = `rgb(${ACTIVE_THEME_RGB.r}, ${ACTIVE_THEME_RGB.g}, ${ACTIVE_THEME_RGB.b})`;
+    ctx.font = "9pt monospace";
+    
+    ypos.forEach((y, ind) => {
+      const text = String.fromCharCode(33 + Math.floor(Math.random() * 93));
+      const x = ind * 12;
+      ctx.fillText(text, x, y);
+      if (y > 100 + Math.random() * 10000) ypos[ind] = 0;
+      else ypos[ind] = y + 12;
+    });
+  }
+  
+  if (matrixInterval) clearInterval(matrixInterval);
+  matrixInterval = setInterval(step, 35);
+  showToast("Matrix Activated ⚡", "Click terminal or press any key to exit", "success");
+}
+
+function stopMatrixRain() {
+  if (matrixInterval) {
+    clearInterval(matrixInterval);
+    matrixInterval = null;
+  }
+  const canvas = document.getElementById("terminal-matrix-canvas");
+  if (canvas) canvas.style.display = "none";
+}
+
 function initTerminalInput() {
   const input = document.getElementById("terminal-input");
   const history = document.getElementById("terminal-history");
   if (!input || !history) return;
   
+  const matrixCanvas = document.getElementById("terminal-matrix-canvas");
+  matrixCanvas?.addEventListener("click", () => {
+    stopMatrixRain();
+    input.focus();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (matrixInterval) {
+      stopMatrixRain();
+      e.preventDefault();
+      setTimeout(() => input.focus(), 10);
+    }
+  });
+  
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       const rawCmd = input.value;
       const cmd = rawCmd.trim().toLowerCase();
-      if (!cmd) return;
       
-      // 1. Add user's command to history
       const userLine = document.createElement("div");
       userLine.className = "terminal-line";
-      userLine.innerHTML = `<span class="terminal-prompt">guest@suryadip.dev:~$</span> ${rawCmd}`;
+      userLine.innerHTML = `<span class="terminal-prompt">${activeGame ? 'trivia-game' : 'guest'}@suryadip.dev:~$</span> ${rawCmd}`;
       history.appendChild(userLine);
       
-      // 2. Process command output
+      if (!cmd) {
+        input.value = "";
+        history.scrollTop = history.scrollHeight;
+        return;
+      }
+
+      if (activeGame) {
+        if (cmd === "exit" || cmd === "quit") {
+          activeGame = null;
+          const outDiv = document.createElement("div");
+          outDiv.className = "terminal-output";
+          outDiv.innerHTML = "Trivia quiz aborted. Back to standard console prompt.";
+          history.appendChild(outDiv);
+        } else {
+          const currentQ = TRIVIA_QUESTIONS[activeGame.questionIndex];
+          let feedback = "";
+          
+          if (cmd === "a" || cmd === "b" || cmd === "c") {
+            if (cmd === currentQ.a) {
+              activeGame.score++;
+              feedback = `<span style="color:#34d399">✔ ${currentQ.successMsg}</span>`;
+            } else {
+              feedback = `<span style="color:#fb7185">✘ ${currentQ.failMsg}</span>`;
+            }
+            
+            activeGame.questionIndex++;
+            
+            let nextOutput = "";
+            if (activeGame.questionIndex < TRIVIA_QUESTIONS.length) {
+              nextOutput = "<br><br>" + TRIVIA_QUESTIONS[activeGame.questionIndex].q;
+            } else {
+              const finalScore = activeGame.score;
+              nextOutput = `<br><br>🏁 <b>Trivia Finished! Score: ${finalScore}/3</b><br>`;
+              if (finalScore === 3) {
+                nextOutput += `<span style="color:#fbbf24">Perfect Score! 🏆 You unlocked Suryadip's Easter Egg! Here is a virtual coffee: ☕</span>`;
+                setTimeout(() => {
+                  showToast("Easter Egg Unlocked! 🏆", "You scored 100% on Suryadip's Trivia! ☕", "success");
+                }, 400);
+              } else {
+                nextOutput += `Nice try! Type 'game' to play again and aim for a perfect score.`;
+              }
+              activeGame = null;
+            }
+            
+            const outDiv = document.createElement("div");
+            outDiv.className = "terminal-output";
+            outDiv.innerHTML = feedback + nextOutput;
+            history.appendChild(outDiv);
+          } else {
+            const outDiv = document.createElement("div");
+            outDiv.className = "terminal-output";
+            outDiv.innerHTML = `<span style="color:#fb7185">Invalid option. Please type <b>A</b>, <b>B</b>, or <b>C</b> to answer, or type 'exit' to abort.</span>`;
+            history.appendChild(outDiv);
+          }
+        }
+        
+        input.value = "";
+        history.scrollTop = history.scrollHeight;
+        return;
+      }
+      
       let output = "";
       if (cmd === "help") {
         output = "Available commands:<br>" + 
@@ -1036,6 +1251,11 @@ function initTerminalInput() {
                  " - <b>dsa</b>      : Check competitive programming stats.<br>" +
                  " - <b>projects</b> : Lists featured portfolio projects.<br>" +
                  " - <b>contact</b>  : Find my email and social links.<br>" +
+                 " - <b>theme</b>    : List available accent theme colors.<br>" +
+                 " - <b>theme &lt;color&gt;</b> : Apply accent theme dynamically (e.g. 'theme rose').<br>" +
+                 " - <b>matrix</b>   : Trigger falling code digital rain visualizer.<br>" +
+                 " - <b>game</b>     : Start an interactive Computer Science Trivia game!<br>" +
+                 " - <b>hack</b>     : Trigger mainframe intrusion exploit script micro-interaction.<br>" +
                  " - <b>clear</b>    : Clear prompt history.";
       } else if (cmd === "about") {
         output = "I am Suryadip Banerjee — an AI & Full Stack Developer who enjoys solving complex algorithmic puzzles and building secure, data-driven applications.";
@@ -1058,11 +1278,78 @@ function initTerminalInput() {
                  "LINKEDIN: linkedin.com/in/suryadip-banerjee";
       } else if (cmd === "clear") {
         history.innerHTML = "";
+      } else if (cmd === "matrix") {
+        startMatrixRain();
+      } else if (cmd === "game") {
+        activeGame = { questionIndex: 0, score: 0 };
+        output = "🎮 <b>Suryadip's Coding Trivia Game started!</b><br>" +
+        "I've got 3 multiple-choice questions for you. Type <b>A</b>, <b>B</b>, or <b>C</b> to answer.<br><br>" +
+        TRIVIA_QUESTIONS[0].q;
+      } else if (cmd === "hack") {
+        output = "🔓 [SYSTEM] Initiating bypass sequence...";
+        const lines = [
+          { text: "🛰️ Establishing secure handshake with suryadip.dev mainframe...", delay: 600, color: "#94a3b8" },
+          { text: "⚡ Injecting SQL payload via buffer overflow injection...", delay: 1300, color: "#94a3b8" },
+          { text: "🔐 Cracking Leetcode knight database credentials (1000+ solved)...", delay: 2000, color: "#94a3b8" },
+          { text: "📊 Retrieving Pupil rank parameters on Codeforces server...", delay: 2700, color: "#94a3b8" },
+          { text: "👑 ACCESS GRANTED. Welcome, Commander.", delay: 3400, color: "#34d399" },
+          { text: "<pre style='color:#34d399; font-family:monospace; line-height:1.2; font-size:0.56rem; margin-top:0.5rem;'>" +
+                   " _  _  __   ___  _  _    ___  ____   __   __ _  ____  ____  ____ \n" +
+                   "/ )( \\/ _\\ / __)/ )( \\  / __)(  _ \\ / _\\ (  ( \\(_  _)(  __)(    \\\n" +
+                   ") __ /    ( (__ ) __ ( ( (_ \\ )   //    \\/    /  )(   ) _)  ) D (\n" +
+                   "\\_)(_\\_/\\_/\\___)\\_)(_/  \\___/(__\\_)\\_/\\_/\\_)__) (__) (____)(____/\n" +
+                   "</pre>", delay: 4000, color: "#34d399" }
+        ];
+        
+        input.disabled = true;
+        const originalPlaceholder = input.placeholder;
+        input.placeholder = "Running exploit script...";
+        
+        lines.forEach(line => {
+          setTimeout(() => {
+            const lDiv = document.createElement("div");
+            lDiv.className = "terminal-output";
+            lDiv.style.color = line.color;
+            lDiv.innerHTML = line.text;
+            history.appendChild(lDiv);
+            history.scrollTop = history.scrollHeight;
+          }, line.delay);
+        });
+        
+        setTimeout(() => {
+          input.disabled = false;
+          input.placeholder = originalPlaceholder;
+          input.focus();
+          
+          document.querySelectorAll(".terminal-prompt").forEach(p => {
+            p.style.color = "#34d399";
+          });
+          input.style.color = "#34d399";
+          showToast("Mainframe Hacked! 🔓", "Exploit script completed successfully.", "success");
+        }, 4300);
+      } else if (cmd.startsWith("theme")) {
+        const parts = cmd.split(" ");
+        if (parts.length === 1) {
+          output = "Available themes:<br>" +
+                   " - <b>indigo</b>   : Classic royal purple (Default)<br>" +
+                   " - <b>emerald</b>  : Cybernetic tech green<br>" +
+                   " - <b>rose</b>     : Premium editorial pink-red<br>" +
+                   " - <b>amber</b>    : Classic warm gold<br>" +
+                   " - <b>cyan</b>     : High-tech electrical cyan<br>" +
+                   "<br>Type <b>'theme &lt;name&gt;'</b> to apply a theme. E.g., 'theme emerald'.";
+        } else {
+          const chosen = parts[1];
+          const success = setTheme(chosen);
+          if (success) {
+            output = `<span style="color:#34d399">✔ Theme successfully switched to ${chosen}! Accent color is now active.</span>`;
+          } else {
+            output = `<span style="color:#fb7185">✘ Theme '${chosen}' not found. Available options: indigo, emerald, rose, amber, cyan.</span>`;
+          }
+        }
       } else {
         output = `bash: command not found: ${cmd}. Type 'help' for options.`;
       }
       
-      // Append output if present
       if (output) {
         const outDiv = document.createElement("div");
         outDiv.className = "terminal-output";
@@ -1070,14 +1357,12 @@ function initTerminalInput() {
         history.appendChild(outDiv);
       }
       
-      // 3. Reset and scroll to bottom
       input.value = "";
       history.scrollTop = history.scrollHeight;
     }
   });
   
-  // Clicking anywhere on the terminal targets focus
   document.getElementById("tab-terminal")?.addEventListener("click", () => {
-    input.focus();
+    if (!matrixInterval) input.focus();
   });
 }
